@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -6,9 +7,15 @@ import 'package:sign_spark/utils/app_theme.dart';
 import 'package:sign_spark/view/login.dart';
 import 'package:sign_spark/view/signup_screen.dart';
 import 'package:sign_spark/view/splash_screen.dart';
-import 'package:sign_spark/view/start_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'firebase_options.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await GetStorage.init();
   Get.put(ThemeController());
 

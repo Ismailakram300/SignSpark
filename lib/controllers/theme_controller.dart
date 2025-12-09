@@ -1,23 +1,21 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
 
 class ThemeController extends GetxController {
   final box = GetStorage();
-  final key ='isDarkMode';
-  ThemeMode get theme => _loadTheme() ? ThemeMode.dark : ThemeMode.light;
-  bool get _isDarkMode =>_loadTheme();
+  final key = 'isDarkMode';
 
-  bool _loadTheme()=> box.read(key) ?? false;
+  ThemeMode get theme => isDarkMode ? ThemeMode.dark : ThemeMode.light;
 
-  void saveTheme(bool isDarkMode) => box.write(key,isDarkMode);
+  bool get isDarkMode => box.read(key) ?? false;
 
-  void toggleTheme(){
-    Future.delayed(const Duration(milliseconds: 50),(){
-      Get.changeThemeMode(_loadTheme()? ThemeMode.light: ThemeMode.dark);
-      saveTheme(!_loadTheme());
-      update();
-    });
+  void saveTheme(bool value) => box.write(key, value);
+
+  void toggleTheme(bool value) {
+    saveTheme(value);
+    Get.changeThemeMode(value ? ThemeMode.dark : ThemeMode.light);
+    update();
   }
 }

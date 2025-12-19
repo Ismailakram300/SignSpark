@@ -2,8 +2,6 @@ class AppUser {
   final String uid;
   final String name;
   final String email;
-
-
   
   final int streak;
   final String photoUrl;

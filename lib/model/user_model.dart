@@ -5,6 +5,8 @@ class AppUser {
   final int streak;
   final String photoUrl;
 
+  
+
   AppUser({
     required this.uid,
     required this.name,

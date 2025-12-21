@@ -5,7 +5,8 @@ class AppThemes{
     primaryColor: Colors.green.shade100,
     scaffoldBackgroundColor: Colors.white,
     brightness: Brightness.light,
-
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.blue,
       elevation: 0,
       iconTheme: IconThemeData(
         color: Colors.blue

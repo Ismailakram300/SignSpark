@@ -5,7 +5,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:sign_spark/controllers/theme_controller.dart';
 import 'package:sign_spark/utils/app_theme.dart';
 import 'package:sign_spark/view/login.dart';
-
 import 'package:sign_spark/view/signup_screen.dart';
 import 'package:sign_spark/view/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';

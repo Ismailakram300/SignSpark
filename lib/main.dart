@@ -18,7 +18,6 @@ void main() async {
   );
   await GetStorage.init();
   Get.put(ThemeController());
-
   runApp(const MyApp());
 }
 

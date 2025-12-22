@@ -17,9 +17,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await GetStorage.init();
-
-
-  
   Get.put(ThemeController());
 
   runApp(const MyApp());

@@ -1,4 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:sign_spark/Quiz/quiz.dart';
+import 'package:sign_spark/activities.dart';
+import 'package:sign_spark/aplhabet_signs/aplhabetic_ui.dart';
+import 'package:sign_spark/view/psl_category_list_screen.dart';
+import 'package:sign_spark/view/psl_cateory_detail_screen.dart';
+
+import '../Quiz/phrase_quiz.dart';
+import '../camera/camera_prediction.dart';
+import '../camera/live_camera.dart';
+import '../model/category_model_psl.dart';
+import '../random_words/random_words_ui.dart';
+import '../services/psl_category_service.dart';
+import '../widgets/image_builder.dart';
+import 'Camera.dart';
 
 class DashboardScreen extends StatelessWidget {
   final List<Map<String, dynamic>> dashboardItems = [
@@ -9,7 +23,7 @@ class DashboardScreen extends StatelessWidget {
     {"title": "Messages", "icon": Icons.message, "color": Colors.red},
     {"title": "Tracking", "icon": Icons.location_on, "color": Colors.teal},
   ];
-
+  final PslApiService apiService= PslApiService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,22 +32,242 @@ class DashboardScreen extends StatelessWidget {
       body: Column(
         children: [
           // Progress Bar
-SizedBox(height: 25,),
+          SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16,0,0,0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Pakistan Sign language (PSL)",style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold
+                ),),
+                TextButton(onPressed: (){
+                  Navigator.push(context,MaterialPageRoute(builder: (_)=>CategoryScreen()));
+                }, child:    Text("more",style: TextStyle(
+                    fontSize: 16,
+                    decoration: TextDecoration.underline,
+                    color: Colors.green.shade700,
+                    fontWeight: FontWeight.normal
+                ),),)
+              ],
+            ),
+          ),
+          FutureBuilder<List<Category>>(
+            future: apiService.fetchCategories(),
+            builder: (context, snapshot) {
 
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+
+              if (snapshot.hasError) {
+                return Center(child: Text("Error: ${snapshot.error}"));
+              }
+
+              final categories = snapshot.data!;
+
+              return SizedBox(
+                height: 250, // 🔥 Important: define height for horizontal grid
+                width: 370,
+                child: GridView.builder(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  itemCount: categories.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, // 🔥 2 rows
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    childAspectRatio: 1.2, // adjust UI ratio
+                  ),
+                  itemBuilder: (context, index) {
+                    final category = categories[index];
+
+                    return LayoutBuilder(
+                      builder: (context, constraints) {
+                        // 🔥 Get card width dynamically
+                        double cardWidth = constraints.maxWidth;
+
+                        // 🔥 Image size = 35% of card width
+                        double imageSize = cardWidth * 0.35;
+
+                        return InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => CategoryDetailScreen(
+                                  categoryId: category.id,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Card(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                /// 🔥 Responsive Image
+                                SmartNetworkImage(
+                                  imageUrl: category.image,
+                                  width: imageSize,
+                                  height: imageSize,
+                                  borderRadius: BorderRadius.circular(imageSize * 0.2),
+                                ),
+
+                                SizedBox(height: imageSize * 0.25),
+
+                                /// 🔥 Title
+                                Text(
+                                  category.title,
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: cardWidth * 0.09, // responsive text
+                                  ),
+                                ),
+
+                                SizedBox(height: cardWidth * 0.03),
+
+                                /// 🔥 Subtitle
+                                Text(
+                                  category.titleSecondary,
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: cardWidth * 0.075,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              );
+            },
+          ),
           // Dashboard Grid
+          SizedBox(height: 25),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16,0,0,0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("American Sign language (ASL)",style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold
+                ),),
+                TextButton(onPressed: (){
+                  Navigator.push(context,MaterialPageRoute(builder: (_)=>CategoryScreen()));
+                }, child:    Text("",style: TextStyle(
+                    fontSize: 16,
+                    decoration: TextDecoration.underline,
+                    color: Colors.green.shade700,
+                    fontWeight: FontWeight.normal
+                ),),)
+              ],
+            ),
+          ),
           Expanded(
             child: GridView.count(
-              crossAxisCount: 2,
+              crossAxisCount: 3,
               padding: EdgeInsets.all(16),
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
               children: [
-                DashboardTile(icon: Icons.sign_language, label: "Learn Signs"),
-                DashboardTile(icon: Icons.extension, label: "Activities"),
-                DashboardTile(icon: Icons.quiz, label: "Quick Quiz"),
-                DashboardTile(icon: Icons.video_library, label: "Videos"),
-                DashboardTile(icon: Icons.download, label: "Downloads"),
-                DashboardTile(icon: Icons.emoji_events, label: "Badges"),
+                DashboardTile(
+                  icon: Icons.sign_language,
+                  label: "English Alphabet",
+                  ontap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => AplhabeticUi()),
+                    );
+                  },
+                ),
+                DashboardTile(
+                  icon: Icons.extension,
+                  label: "Activities",
+                  ontap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => Activities()),
+                    );
+                  },
+                ),
+                DashboardTile(
+                  icon: Icons.quiz,
+                  label: "Quick Quiz",
+                  ontap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => Quiz()),
+                    );
+                  },
+                ),
+                DashboardTile(
+                  icon: Icons.video_library,
+                  label: "Videos",
+                  ontap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => RandomWordsUi()),
+                    );
+                  },
+                ),
+                DashboardTile(
+                  icon: Icons.question_mark,
+                  label: "Random Quiz",
+                  ontap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => PhraseQuiz()),
+                    );
+                  },
+                ),
+                DashboardTile(
+                  icon: Icons.camera,
+                  label: "Camera",
+                  ontap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => LiveTest()),
+                    );
+                  },
+                ),
+                // DashboardTile(
+                //   icon: Icons.emoji_events,
+                //   label: "Camera",
+                //   ontap: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(builder: (_) => SignPredictionScreen()),
+                //     );
+                //   },
+                // ),
+                // DashboardTile(
+                //   icon: Icons.emoji_events,
+                //   label: "Psl",
+                //   ontap: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(builder: (_) => CategoryScreen()),
+                //     );
+                //   },
+                // ),
               ],
             ),
           ),
@@ -62,7 +296,6 @@ SizedBox(height: 25,),
         ],
       ),
     );
-
   }
 }
 
@@ -102,39 +335,49 @@ class DashboardCard extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            )
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
           ],
         ),
       ),
     );
   }
 }
+
 class DashboardTile extends StatelessWidget {
   final IconData icon;
   final String label;
-
-  DashboardTile({required this.icon, required this.label});
+  final VoidCallback ontap;
+  DashboardTile({required this.icon, required this.label, required this.ontap});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+
       decoration: BoxDecoration(
-        color: Colors.purple.shade50,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,       // shadow color
+            blurRadius: 8,               // how soft the shadow is
+            spreadRadius: 2,             // how much the shadow spreads
+            offset: Offset(0, 4),       // x and y offset
+          ),
+        ],
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20),
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
-        onTap: () {},
+        onTap: ontap,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 48, color: Colors.purple),
+            Icon(icon, size: 35, color: Colors.green.shade600),
             SizedBox(height: 10),
-            Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+            Text(
+              label,
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+            ),
           ],
         ),
       ),

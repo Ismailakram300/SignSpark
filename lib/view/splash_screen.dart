@@ -2,7 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:liquid_progress_indicator_v2/liquid_progress_indicator.dart';
+import 'package:sign_spark/firebase_serivces/firebase_auth.dart';
+import 'package:sign_spark/services/streak_service.dart';
 import 'package:sign_spark/view/login.dart';
+import 'package:sign_spark/view/start_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -25,10 +28,37 @@ double progress=0.0;
 
       if (progress >= 1.0) {
         timer.cancel();
-         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+        _checkAuthAndNavigate();
       }
     });
   }
+
+  Future<void> _checkAuthAndNavigate() async {
+    // Check if user is already logged in
+    final currentUser = FirebaseService().getCurrentUser();
+    
+    if (currentUser != null) {
+      // User is logged in, update streak
+      await StreakService().updateStreak();
+      
+      // Navigate to home
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const StartPage()),
+        );
+      }
+    } else {
+      // User not logged in, go to login screen
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

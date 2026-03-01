@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sign_spark/firebase_serivces/firebase_auth.dart';
+import 'package:sign_spark/services/streak_service.dart';
 import 'package:sign_spark/view/ForgetPasswordScreen.dart';
 import 'package:sign_spark/view/signup_screen.dart';
 import 'package:sign_spark/view/start_page.dart';
@@ -36,6 +37,9 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => loading = false);
 
     if (error == null) {
+      // Update streak after successful login
+      await StreakService().updateStreak();
+      
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => StartPage()),
@@ -53,7 +57,13 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
   }
-
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    email.text="user@gmail.com";
+    password.text='123456';
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

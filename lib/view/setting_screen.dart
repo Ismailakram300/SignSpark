@@ -418,6 +418,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:sign_spark/firebase_serivces/firebase_auth.dart';
+import 'package:sign_spark/services/streak_service.dart';
 import 'package:sign_spark/view/login.dart';
 
 import '../controllers/theme_controller.dart';
@@ -439,11 +440,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     // appBar: AppBar(title: const Text("Settings"), centerTitle: true),
+      appBar: AppBar(title: const Text("Settings"), centerTitle: true),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          SizedBox(height: 40,),
+          SizedBox(height: 10,),
           // 🔵 Profile Section
           // Container(
           //   padding: const EdgeInsets.all(16),
@@ -489,18 +490,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
             "Account",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          const SizedBox(height: 12),
+          // const SizedBox(height: 12),
 
-          buildSettingTile(
-            title: "Edit Profile",
-            icon: Icons.person,
-            onTap: () {},
-          ),
-          buildSettingTile(
-            title: "Change Password",
-            icon: Icons.lock,
-            onTap: () {},
-          ),
+          // buildSettingTile(
+          //   title: "Edit Profile",
+          //   icon: Icons.person,
+          //   onTap: () {},
+          // ),
+          // buildSettingTile(
+          //   title: "Change Password",
+          //   icon: Icons.lock,
+          //   onTap: () {},
+          // ),
           buildSettingTile(
             title: "Privacy Policy",
             icon: Icons.privacy_tip,
@@ -521,14 +522,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 12),
 
           // 🔘 Notification Toggle
-          SwitchListTile(
-            title: const Text("Notifications"),
-            value: notification,
-            secondary: const Icon(Icons.notifications),
-            onChanged: (value) {
-              setState(() => notification = value);
-            },
-          ),
+          // SwitchListTile(
+          //   title: const Text("Notifications"),
+          //   value: notification,
+          //   secondary: const Icon(Icons.notifications),
+          //   onChanged: (value) {
+          //     setState(() => notification = value);
+          //   },
+          // ),
 
           // 🔘 Dark Mode Toggle
           SwitchListTile(
@@ -541,14 +542,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
 
           // 🔘 Location Tracking Toggle
-          SwitchListTile(
-            title: const Text("Location Tracking"),
-            value: locationTracking,
-            secondary: const Icon(Icons.location_on),
-            onChanged: (value) {
-              setState(() => locationTracking = value);
-            },
-          ),
+          // SwitchListTile(
+          //   title: const Text("Location Tracking"),
+          //   value: locationTracking,
+          //   secondary: const Icon(Icons.location_on),
+          //   onChanged: (value) {
+          //     setState(() => locationTracking = value);
+          //   },
+          // ),
 
           const SizedBox(height: 25),
 
@@ -580,9 +581,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
             onPressed: () async{
-
-            await  auth.logout();
-            await Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>LoginScreen()));
+              // Clear streak local data
+              StreakService().clearLocalData();
+              
+              // Logout from Firebase
+              await auth.logout();
+              await Navigator.pushReplacement(context,MaterialPageRoute(builder: (_)=>LoginScreen()));
               print("User Logged Out");
             },
           ),

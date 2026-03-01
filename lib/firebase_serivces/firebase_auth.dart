@@ -45,6 +45,7 @@ class FirebaseService {
   //     throw e.message ?? "Login failed";
   //   }
   // }
+  // Login
   Future<String?> login(String email, String password) async {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
@@ -56,6 +57,12 @@ class FirebaseService {
       return e.toString();
     }
   }
+
+  // Get current user (for session check)
+  User? getCurrentUser() {
+    return _firebaseAuth.currentUser;
+  }
+
 
 
   // RESET PASSWORD
@@ -77,6 +84,7 @@ class FirebaseService {
       throw "Logout failed";
     }
   }
+
 
 }
 

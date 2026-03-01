@@ -4,6 +4,7 @@ class AppUser {
   final String email;
   final int streak;
   final String photoUrl;
+  final String? lastLoginDate;
 
   AppUser({
     required this.uid,
@@ -11,6 +12,7 @@ class AppUser {
     required this.email,
     required this.streak,
     required this.photoUrl,
+    this.lastLoginDate,
   });
 
   Map<String, dynamic> toMap() {
@@ -20,6 +22,7 @@ class AppUser {
       "email": email,
       "streak": streak,
       "photoUrl": photoUrl,
+      "lastLoginDate": lastLoginDate,
     };
   }
 
@@ -28,8 +31,10 @@ class AppUser {
       uid: map["uid"],
       name: map["name"],
       email: map["email"],
-      streak: map["streak"],
-      photoUrl: map["photoUrl"],
+      streak: map["streak"] ?? 0,
+      photoUrl: map["photoUrl"] ?? "",
+      lastLoginDate: map["lastLoginDate"],
     );
   }
 }
+

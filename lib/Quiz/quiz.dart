@@ -12,6 +12,7 @@ class _QuizState extends State<Quiz> {
   
   List<dynamic> _questions = [];
   int _currentIndex = 0;
+  
   int _score = 0;
   bool _isAnswered = false;
   String? _selectedAnswer;

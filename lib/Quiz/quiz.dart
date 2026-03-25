@@ -12,6 +12,7 @@ class Quiz extends StatefulWidget {
 class _QuizState extends State<Quiz> {
   
   // Game state
+
   
   List<dynamic> _questions = [];
   int _currentIndex = 0;

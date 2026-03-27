@@ -55,7 +55,6 @@ class _QuizState extends State<Quiz> {
     // Combine and shuffle to randomize positions
     _currentOptions = [...distractors, correctLetter]..shuffle();
   }
-
   void _checkAnswer(String selectedLetter) {
     if (_isAnswered) return;
 

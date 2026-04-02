@@ -11,6 +11,7 @@ class VideoModel {
   final NestedItem? dominantShape;
   final NestedItem? nonDominantShape;
 
+  
   VideoModel({
     required this.id,
     required this.title,

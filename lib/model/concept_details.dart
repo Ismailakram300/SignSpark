@@ -13,7 +13,6 @@ class ConceptDetail {
     required this.difficulty,
   });
 
-  
   factory ConceptDetail.fromJson(Map<String, dynamic> json) {
     return ConceptDetail(
       id: json['id'] ?? 0,

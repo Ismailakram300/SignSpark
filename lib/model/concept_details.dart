@@ -12,8 +12,6 @@ class ConceptDetail {
     required this.image,
     required this.difficulty,
   });
-
-
   
   factory ConceptDetail.fromJson(Map<String, dynamic> json) {
     return ConceptDetail(

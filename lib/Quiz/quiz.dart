@@ -13,6 +13,7 @@ class _QuizState extends State<Quiz> {
   
   // Game state
   
+  
   List<dynamic> _questions = [];
   int _currentIndex = 0;
   int _score = 0;

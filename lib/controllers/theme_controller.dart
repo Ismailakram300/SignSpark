@@ -9,6 +9,7 @@ class ThemeController extends GetxController {
 
   ThemeMode get theme => isDarkMode ? ThemeMode.dark : ThemeMode.light;
 
+  
   bool get isDarkMode => box.read(key) ?? false;
 
   void saveTheme(bool value) => box.write(key, value);

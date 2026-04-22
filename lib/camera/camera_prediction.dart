@@ -20,7 +20,7 @@ class _SignPredictionScreenState extends State<SignPredictionScreen> {
   final picker = ImagePicker();
 
   // 🔁 CHANGE THIS IP if needed
-  final String apiUrl = "http://192.168.1.20:5000/predict";
+  final String apiUrl = "http://192.168.1.6:5000/predict";
 
   Future<void> pickImage() async {
     final picked = await picker.pickImage(source: ImageSource.camera);
@@ -69,12 +69,48 @@ class _SignPredictionScreenState extends State<SignPredictionScreen> {
     }
   }
 
+  void _showDisclaimer() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("⚠️ How to get accurate results"),
+        content: const SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("1. Find a clean wall:", style: TextStyle(fontWeight: FontWeight.bold)),
+              Text("Stand in front of a completely blank wall (e.g., white or solid color) with good lighting."),
+              SizedBox(height: 10),
+              Text("2. Fill the image:", style: TextStyle(fontWeight: FontWeight.bold)),
+              Text("Make sure your hand dominates the picture so there's almost no background visible."),
+              SizedBox(height: 10),
+              Text("3. Check hand direction:", style: TextStyle(fontWeight: FontWeight.bold)),
+              Text("Make sure you perform the signs facing the camera as intended."),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text("GOT IT"),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("ASL Sign Prediction"),
-        backgroundColor: Colors.purple,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.info_outline),
+            onPressed: _showDisclaimer,
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),

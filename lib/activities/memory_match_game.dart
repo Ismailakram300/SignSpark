@@ -241,7 +241,7 @@ class _MemoryCardWidget extends StatelessWidget {
               ? Colors.green.shade100
               : card.isFlipped
                   ? Colors.white
-                  : Colors.blue.shade300,
+                  : Colors.blue.shade100,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: card.isMatched ? Colors.green : Colors.blue.shade400,

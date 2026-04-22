@@ -23,7 +23,7 @@ class DashboardScreen extends StatelessWidget {
     {"title": "Messages", "icon": Icons.message, "color": Colors.red},
     {"title": "Tracking", "icon": Icons.location_on, "color": Colors.teal},
   ];
-  final PslApiService apiService= PslApiService();
+  final PslApiService apiService = PslApiService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,32 +32,66 @@ class DashboardScreen extends StatelessWidget {
       body: Column(
         children: [
           // Progress Bar
+          // SizedBox(height: 10),
+          // Container(
+          //   height: 140,
+          //   width: double.infinity,
+          //   child: GridView.count(
+          //     crossAxisCount: 3,
+          //     padding: EdgeInsets.all(16),
+          //     crossAxisSpacing: 16,
+          //     mainAxisSpacing: 16,
+          //     children: [
+          //       DashboardTile(
+          //         icon: Icons.sign_language,
+          //         label: "English Alphabet",
+          //         ontap: () {
+          //           Navigator.push(
+          //             context,
+          //             MaterialPageRoute(builder: (_) => AplhabeticUi()),
+          //           );
+          //         },
+          //       ),
+          //     ],
+          //   ),
+          // ),
           SizedBox(height: 10),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16,0,0,0),
+            padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Pakistan Sign language (PSL)",style: TextStyle(
-                  fontSize: 15,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold
-                ),),
-                TextButton(onPressed: (){
-                  Navigator.push(context,MaterialPageRoute(builder: (_)=>CategoryScreen()));
-                }, child:    Text("more",style: TextStyle(
-                    fontSize: 16,
-                    decoration: TextDecoration.underline,
-                    color: Colors.green.shade700,
-                    fontWeight: FontWeight.normal
-                ),),)
+                Text(
+                  "Pakistan Sign language (PSL)",
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => CategoryScreen()),
+                    );
+                  },
+                  child: Text(
+                    "more",
+                    style: TextStyle(
+                      fontSize: 16,
+                      decoration: TextDecoration.underline,
+                      color: Colors.green.shade700,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
           FutureBuilder<List<Category>>(
             future: apiService.fetchCategories(),
             builder: (context, snapshot) {
-
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
               }
@@ -67,14 +101,66 @@ class DashboardScreen extends StatelessWidget {
               }
 
               final categories = snapshot.data!;
+              final allowedNames = [
+               // "English Alphabet",
+                "Urdu Alphabet",
+                "Adverbs",
+                "Adjectives",
+                "Airport",
+                "Appliances",
+                "Arts",
+                "Birds",
+                "Body Anatomy",
+                "Clothes and Accessories",
+                "Government",
+                "Nouns - General",
+                "Numbers",
+                "Pakistan Places",
+                "Pronouns",
+                "Science",
+                "Sentences",
+                "Transport",
+                "Verbs",
+                "Weather",
+                "Sports and Games",
+              ];
 
+              final filteredCategories = categories
+                  .where((c) => allowedNames.contains(c.title))
+                  .toList();
+              filteredCategories.insert(
+                0,
+                Category(
+                  id: -1,
+                  title: "English Alphabet",
+                  titleSecondary: "A B C",
+                  image:  "https://d18qapjg363q5r.cloudfront.net/public/categories/abc-two-handed.png",
+                  slug: '',
+                  storageSlug: '',
+                  status:0,
+                  enableIsharay: 0,
+                  order: 0,
+                  createdBy: 0,
+                  updatedby: 0,
+                ),
+              );
+              DashboardTile(
+                icon: Icons.sign_language,
+                label: "English Alphabet",
+                ontap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => AplhabeticUi()),
+                  );
+                },
+              );
               return SizedBox(
                 height: 250, // 🔥 Important: define height for horizontal grid
                 width: 370,
                 child: GridView.builder(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 12),
-                  itemCount: categories.length,
+                  itemCount: filteredCategories.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2, // 🔥 2 rows
                     mainAxisSpacing: 12,
@@ -82,7 +168,7 @@ class DashboardScreen extends StatelessWidget {
                     childAspectRatio: 1.2, // adjust UI ratio
                   ),
                   itemBuilder: (context, index) {
-                    final category = categories[index];
+                    final category = filteredCategories[index];
 
                     return LayoutBuilder(
                       builder: (context, constraints) {
@@ -95,15 +181,33 @@ class DashboardScreen extends StatelessWidget {
                         return InkWell(
                           borderRadius: BorderRadius.circular(16),
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => CategoryDetailScreen(
-                                  categoryId: category.id,
+                            if (category.id == -1) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => AplhabeticUi()),
+                              );
+                            } else {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => CategoryDetailScreen(
+                                    categoryId: category.id,
+                                  ),
                                 ),
-                              ),
-                            );
+                              );
+                            }
                           },
+                          // onTap: () {
+                          //
+                          //   // Navigator.push(
+                          //   //   context,
+                          //   //   MaterialPageRoute(
+                          //   //     builder: (_) => CategoryDetailScreen(
+                          //   //       categoryId: category.id,
+                          //   //     ),
+                          //   //   ),
+                          //   // );
+                          // },
                           child: Card(
                             elevation: 4,
                             shape: RoundedRectangleBorder(
@@ -117,7 +221,9 @@ class DashboardScreen extends StatelessWidget {
                                   imageUrl: category.image,
                                   width: imageSize,
                                   height: imageSize,
-                                  borderRadius: BorderRadius.circular(imageSize * 0.2),
+                                  borderRadius: BorderRadius.circular(
+                                    imageSize * 0.2,
+                                  ),
                                 ),
 
                                 SizedBox(height: imageSize * 0.25),
@@ -130,7 +236,8 @@ class DashboardScreen extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
-                                    fontSize: cardWidth * 0.09, // responsive text
+                                    fontSize:
+                                        cardWidth * 0.09, // responsive text
                                   ),
                                 ),
 
@@ -161,23 +268,35 @@ class DashboardScreen extends StatelessWidget {
           // Dashboard Grid
           SizedBox(height: 25),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16,0,0,0),
+            padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("American Sign language (ASL)",style: TextStyle(
+                Text(
+                  "Other Learning Activities",
+                  style: TextStyle(
                     fontSize: 15,
                     color: Colors.black,
-                    fontWeight: FontWeight.bold
-                ),),
-                TextButton(onPressed: (){
-                  Navigator.push(context,MaterialPageRoute(builder: (_)=>CategoryScreen()));
-                }, child:    Text("",style: TextStyle(
-                    fontSize: 16,
-                    decoration: TextDecoration.underline,
-                    color: Colors.green.shade700,
-                    fontWeight: FontWeight.normal
-                ),),)
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => CategoryScreen()),
+                    );
+                  },
+                  child: Text(
+                    "",
+                    style: TextStyle(
+                      fontSize: 16,
+                      decoration: TextDecoration.underline,
+                      color: Colors.green.shade700,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -188,16 +307,16 @@ class DashboardScreen extends StatelessWidget {
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
               children: [
-                DashboardTile(
-                  icon: Icons.sign_language,
-                  label: "English Alphabet",
-                  ontap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => AplhabeticUi()),
-                    );
-                  },
-                ),
+                // DashboardTile(
+                //   icon: Icons.sign_language,
+                //   label: "English Alphabet",
+                //   ontap: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(builder: (_) => AplhabeticUi()),
+                //     );
+                //   },
+                // ),
                 DashboardTile(
                   icon: Icons.extension,
                   label: "Activities",
@@ -353,14 +472,13 @@ class DashboardTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Colors.black12,       // shadow color
-            blurRadius: 8,               // how soft the shadow is
-            spreadRadius: 2,             // how much the shadow spreads
-            offset: Offset(0, 4),       // x and y offset
+            color: Colors.black12, // shadow color
+            blurRadius: 8, // how soft the shadow is
+            spreadRadius: 2, // how much the shadow spreads
+            offset: Offset(0, 4), // x and y offset
           ),
         ],
         color: Colors.white,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sign_spark/services/psl_category_service.dart';
 import 'package:sign_spark/view/psl_cateory_detail_screen.dart';
 
+import '../aplhabet_signs/aplhabetic_ui.dart';
 import '../model/category_model_psl.dart';
 import '../widgets/image_builder.dart';
 
@@ -26,25 +27,52 @@ class CategoryScreen extends StatelessWidget {
           }
 
           final categories = snapshot.data!;
+          final allowedNames = [ "Urdu Alphabet", "Adverbs","Adjectives","Airport","Appliances","Arts","Body Anatomy","Clothes and Accessories","Government","Nouns - General","Numbers","Pakistan Places","Pronouns","Science","Sentences","Transport","Verbs","Weather","Sports and Games"];
 
+          final filteredCategories = categories
+              .where((c) => allowedNames.contains(c.title))
+              .toList();
+          filteredCategories.insert(
+            0,
+            Category(
+              id: -1,
+              title: "English Alphabet",
+              titleSecondary: "A B C",
+              image:  "https://d18qapjg363q5r.cloudfront.net/public/categories/abc-two-handed.png",
+              slug: '',
+              storageSlug: '',
+              status:0,
+              enableIsharay: 0,
+              order: 0,
+              createdBy: 0,
+              updatedby: 0,
+            ),
+          );
           return ListView.builder(
-            itemCount: categories.length,
+            itemCount: filteredCategories.length,
             itemBuilder: (context, index) {
-              final category = categories[index];
+              final category = filteredCategories[index];
 
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(16),
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => CategoryDetailScreen(
-                          categoryId: category.id,
+                    if (category.id == -1) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => AplhabeticUi()),
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CategoryDetailScreen(
+                            categoryId: category.id,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    }
                   },
                   child: Card(
                     elevation: 4,

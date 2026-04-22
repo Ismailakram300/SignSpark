@@ -196,7 +196,9 @@ class _PhraseQuizState extends State<PhraseQuiz> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.purple.shade50,
+                //color: Colors.purple.shade50,
+                color: Colors.green.shade100,
+
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Text(
@@ -246,7 +248,7 @@ class _PhraseQuizState extends State<PhraseQuiz> {
                 itemCount: _currentOptions.length,
                 itemBuilder: (context, index) {
                   final phrase = _currentOptions[index];
-                  Color backgroundColor = Colors.purple.shade50;
+                  Color backgroundColor = Colors.green.shade100;
                   Color textColor = Colors.black87;
                   
                   if (_isAnswered) {
@@ -289,13 +291,15 @@ class _PhraseQuizState extends State<PhraseQuiz> {
               width: double.infinity,
               child: _isAnswered
                   ? ElevatedButton(
+
                       onPressed: _nextQuestion,
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green.shade600,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text('Next Question', style: TextStyle(fontSize: 18, color: Colors.black)),
+                      child: const Text('Next Question', style: TextStyle(fontSize: 18, color: Colors.white)),
                     )
                   : const SizedBox(),
             ),

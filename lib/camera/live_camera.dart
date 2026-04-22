@@ -19,31 +19,93 @@ class _LiveSignScreenState extends State<LiveSignScreen> {
   bool _isPredicting = false;
   String _result = "Waiting...";
 
-  final String apiUrl = "http://192.168.1.20:5000/predict";
+  List<CameraDescription> _cameras = [];
+  int _selectedCameraIndex = 0;
+  Timer? _captureTimer;
+
+  final String apiUrl = "http://192.168.1.6:5000/predict";
 
   @override
   void initState() {
     super.initState();
     initCamera();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showDisclaimer();
+    });
+
+    // 🔁 Auto capture every 1 second
+    _captureTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!_isPredicting && mounted) {
+        captureAndPredict();
+      }
+    });
+  }
+
+  void _showDisclaimer() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("⚠️ How to get accurate results"),
+        content: const SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("1. Find a clean wall:", style: TextStyle(fontWeight: FontWeight.bold)),
+              Text("Stand in front of a completely blank wall (e.g., white or solid color) with good lighting."),
+              SizedBox(height: 10),
+              Text("2. Fill the frame:", style: TextStyle(fontWeight: FontWeight.bold)),
+              Text("Make sure your hand dominates the entirety of the camera frame so there's almost no background visible."),
+              SizedBox(height: 10),
+              Text("3. Check hand direction:", style: TextStyle(fontWeight: FontWeight.bold)),
+              Text("Make sure you perform the signs facing the camera as intended."),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text("GOT IT"),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> initCamera() async {
-    final cameras = await availableCameras();
+    _cameras = await availableCameras();
+    if (_cameras.isNotEmpty) {
+      await _initCameraController(_cameras[_selectedCameraIndex]);
+    }
+  }
+
+  Future<void> _initCameraController(CameraDescription cameraDescription) async {
+    if (_controller != null) {
+      await _controller!.dispose();
+    }
     _controller = CameraController(
-      cameras.first,
+      cameraDescription,
       ResolutionPreset.medium,
       enableAudio: false,
     );
 
     await _controller!.initialize();
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
-    // 🔁 Auto capture every 1 second
-    Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (!_isPredicting && mounted) {
-        captureAndPredict();
+  Future<void> _flipCamera() async {
+    if (_cameras.isEmpty) return;
+
+    setState(() {
+      _selectedCameraIndex = _selectedCameraIndex == 0 ? 1 : 0;
+      if (_selectedCameraIndex >= _cameras.length) {
+        _selectedCameraIndex = 0;
       }
     });
+
+    await _initCameraController(_cameras[_selectedCameraIndex]);
   }
 
   Future<void> captureAndPredict() async {
@@ -79,6 +141,7 @@ class _LiveSignScreenState extends State<LiveSignScreen> {
 
   @override
   void dispose() {
+    _captureTimer?.cancel();
     _controller?.dispose();
     super.dispose();
   }
@@ -88,7 +151,16 @@ class _LiveSignScreenState extends State<LiveSignScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Live ASL Detection"),
-        backgroundColor: Colors.purple,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.flip_camera_ios),
+            onPressed: _flipCamera,
+          ),
+          IconButton(
+            icon: const Icon(Icons.info_outline),
+            onPressed: _showDisclaimer,
+          ),
+        ],
       ),
       body: Column(
         children: [

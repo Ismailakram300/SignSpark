@@ -422,6 +422,10 @@ import 'package:sign_spark/services/streak_service.dart';
 import 'package:sign_spark/view/login.dart';
 
 import '../controllers/theme_controller.dart';
+import 'privacy_policy_screen.dart';
+import 'terms_conditions_screen.dart';
+import 'about_app_screen.dart';
+import 'help_support_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -505,12 +509,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
           buildSettingTile(
             title: "Privacy Policy",
             icon: Icons.privacy_tip,
-            onTap: () {},
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PrivacyPolicyScreen())),
           ),
           buildSettingTile(
             title: "Terms & Conditions",
             icon: Icons.description,
-            onTap: () {},
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const TermsConditionsScreen())),
           ),
 
           const SizedBox(height: 25),
@@ -559,11 +563,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           const SizedBox(height: 12),
 
-          buildSettingTile(title: "About App", icon: Icons.info, onTap: () {}),
+          buildSettingTile(
+            title: "About App", 
+            icon: Icons.info, 
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AboutAppScreen()))
+          ),
           buildSettingTile(
             title: "Help & Support",
             icon: Icons.help_outline,
-            onTap: () {},
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpSupportScreen())),
           ),
 
           const SizedBox(height: 25),

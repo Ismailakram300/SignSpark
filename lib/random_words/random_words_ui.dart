@@ -82,8 +82,9 @@ class _PhraseCard extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Colors.purple.shade50,
-                Colors.blue.shade50,
+                Colors.grey,
+
+                Colors.green.shade50,
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -96,13 +97,13 @@ class _PhraseCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.purple.shade100,
+                  color: Colors.white,
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
                   Icons.play_circle_filled,
                   size: 50,
-                  color: Colors.purple,
+                  color: Colors.green,
                 ),
               ),
               const SizedBox(height: 16),
@@ -123,7 +124,7 @@ class _PhraseCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.purple.shade200,
+                    color: Colors.green,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Text(
